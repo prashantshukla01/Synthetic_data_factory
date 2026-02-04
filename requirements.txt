@@ -1,13 +1,14 @@
 #core orchestration 
-langgraph
+langgraph>=0.1.0
 langchain-google-genai
 langchain
 python-dotenv
+langchain-core
 
 #persistence and memory
-langgraph-checkpoint-reddis
-langgraph-checkpoint-postgres
-redis
+langgraph-checkpoint-redis>=0.1.0
+langgraph-checkpoint-postgres>=0.1.0
+redis>=5.0.0
 psycopg[binary,pool]>=3.1.0 #psycopg is the official PostgreSQL driver for Python.
 
 
