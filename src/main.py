@@ -1,54 +1,54 @@
 import uuid
+import sys
 from src.graph.workflow import app
 from src.data_eng.formatter import format_for_finetuning, save_to_jsonl
 from src.data_eng.hf_uploader import upload_dataset_to_hf
 
-
-def run_factory(seed_list : list):
-    """
-    Runs the AI factory for a list of topics.
-    """
+def run_factory(seed_list: list):
+    print(f"🚀 Factory initialized with {len(seed_list)} topics.", flush=True)
     
-    #unique thread id for redis checkpointing
+    # Unique thread ID for Redis checkpointing
     config = {"configurable": {"thread_id": str(uuid.uuid4())}}
     
-    
-    for seed in seed_list:
-        print(f"\n--- Processing Topic: {seed} ---")
+    for i, seed in enumerate(seed_list):
+        print(f"\n[{i+1}/{len(seed_list)}] 🔄 Processing Topic: {seed}...", flush=True)
         
-        
-        #run the graph
-        
-        initial_state = {
-            "seed": seed,
-            "retry_count": 0,
-            "messages": []
-        }
-        final_state = app.invoke(initial_state , config=config)
-        
-        #extract and format if score is high enough
-        
-        if final_state.get("score" , 0) >= 8:
-            formatted_data = format_for_finetuning(
-                seed = final_state["seed"],
-                response = final_state["current_generation"]
+        try:
+            initial_state = {
+                "seed": seed,
+                "retry_count": 0,
+                "messages": []
+            }
+            
+            # This is where the AI work happens
+            final_state = app.invoke(initial_state, config=config)
+            
+            score = final_state.get("score", 0)
+            print(f"📊 Quality Score: {score}/10", flush=True)
+            
+            if score >= 8:
+                formatted_data = format_for_finetuning(
+                    seed=final_state["seed"],
+                    response=final_state["current_generation"]
                 )
-        
-        
-        #save to local jsonl
-            save_to_jsonl(formatted_data)
-            
-        else:
-            print(f"Topic '{seed}' failed to meet quality score")
-            
+                save_to_jsonl(formatted_data)
+                print(f"✅ Record saved locally.", flush=True)
+            else:
+                print(f"⚠️ Low score. Skipping save.", flush=True)
+                
+        except Exception as e:
+            print(f"❌ Error during graph execution: {e}", flush=True)
+
+    print("\n⬆️ Syncing all accepted data to Hugging Face...", flush=True)
     upload_dataset_to_hf()
-    
-    if __name__ == "__main__":
-        #example seeds
-        seeds = [
-            "The impact of climate change on global agriculture",
-            "Advancements in renewable energy technologies",
-            "The role of artificial intelligence in modern healthcare"
-        ]
-        
-        run_factory(seeds)
+    print("🏁 Process Complete.", flush=True)
+
+if __name__ == "__main__":
+    # Ensure topics are defined correctly
+    topics = [
+        "Advanced Python Decorators",
+        "C++ Memory Management",
+        "Fintech API Security"
+    ]
+    print("--- STARTING SCRIPT ---", flush=True)
+    run_factory(topics)
