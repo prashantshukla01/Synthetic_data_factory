@@ -1,15 +1,20 @@
 import os 
+from dotenv import load_dotenv
 from pydantic import BaseModel , Field
 from langchain_google_genai import ChatGoogleGenerativeAI
 from src.graph.state import AgentState
-
+load_dotenv()
 class EvaluationSchema(BaseModel):
     score : int = Field(description="Score from 1 to 10", ge =1 , le= 10)
     feedback: str = Field(description="Reasoning for the score and suggestions for improvement")
     
     
     
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.7)
+llm = ChatGoogleGenerativeAI(
+    model="gemini-3-flash-preview",
+    temperature=0.7,
+    api_key=os.getenv("GOOGLE_API_KEY"),
+)
 evaluator_llm = llm.with_structured_output(EvaluationSchema)
 
 
