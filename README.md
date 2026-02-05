@@ -17,7 +17,7 @@ This project is designed with **industry-grade reliability, observability, and s
 - Automatic retry handling and failure recovery
 
 ### 🛡️ Self-Healing Data Quality
-- Dedicated **Judge LLM (Gemini 1.5 Flash)**
+- Dedicated **Judge LLM (Gemini 3.0 Flash Preview )**
 - Multi-metric evaluation (relevance, correctness, clarity)
 - Only samples scoring **≥ 8/10** are accepted
 - Controlled retry logic for weak outputs
