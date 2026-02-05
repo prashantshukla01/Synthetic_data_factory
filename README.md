@@ -71,24 +71,46 @@ The system is structured into **four industrial layers**, each with a single res
 ## 📂 Project Structure
 
 ```text
-synthetic_data_factory/
-├── src/
-│   ├── graph/                  # LangGraph orchestration
-│   │   ├── state.py             # State schema (retry_count, score, etc.)
-│   │   ├── nodes.py             # Gemini Generator & Judge logic
-│   │   ├── edges.py             # Conditional routing rules
-│   │   └── workflow.py          # Compiled LangGraph + Redis Saver
-│   │
-│   ├── data_eng/               # Data engineering layer
-│   │   ├── formatter.py         # JSONL / ChatML standardization
-│   │   └── hf_uploader.py       # Hugging Face dataset sync
-│   │
-│   ├── training/               # Fine-tuning pipelines
-│   │   ├── train_laptop.py      # Apple Silicon (M3, MPS, FP16)
-│   │   └── train_super.py       # NVIDIA A100 (CUDA, QLoRA, bf16)
-│   │
-│   └── main.py                 # Synthetic data factory entry point
+ai-factory-project/
+├── .env                         # API keys (Gemini, OpenAI, HF, LangSmith)
 │
-├── .env                        # Secrets (Gemini, HF, LangSmith)
-├── requirements.txt            # Dependency manifest
-└── submit_job.sh               # SLURM job submission script
+├── config/                      # Centralized configuration
+│   ├── settings.yaml            # Thresholds (score >= 8), model names, retries
+│   └── prompts.yaml             # System prompts (Generator, Judge, Formatter)
+│
+├── data/                        # Local data storage
+│   ├── raw/                     # Initial seeds / prompts
+│   ├── processed/               # JSONL sink (Level 2 output)
+│   └── checkpoints/             # Graph + state backups
+│
+├── src/
+│   ├── main.py                  # Entry point to run the factory
+│
+│   ├── graph/                   # Level 1: Orchestration Brain (LangGraph)
+│   │   ├── state.py              # State schema (retry_count, score, trace_id)
+│   │   ├── nodes.py              # Generator, Judge, Formatter
+│   │   ├── edges.py              # Conditional routing (score < 8 vs >= 8)
+│   │   └── workflow.py           # Graph compilation + Redis checkpointing
+│
+│   ├── data_eng/                # Level 2: Data Engineering Layer
+│   │   ├── formatter.py          # JSONL / ChatML normalization
+│   │   └── hf_uploader.py        # HuggingFace dataset syncing
+│
+│   ├── evaluation/              # Level 4: Evaluation & Feedback Loop
+│   │   ├── benchmarks.py         # Regression & drift detection
+│   │   └── metrics.py            # Accuracy, hallucination, score tracking
+│
+│   ├── training/                # Level 3: Fine-tuning pipelines
+│   │   ├── train_laptop.py       # Apple Silicon (MPS, FP16)
+│   │   └── train_super.py        # A100 (CUDA, QLoRA, bf16)
+│
+│   └── utils/                   # Shared utilities
+│       ├── database.py           # Redis / Postgres connections
+│       └── logger.py             # LangSmith / custom logging
+│
+├── notebooks/                   # Exploration & analysis
+│   └── drift_analysis.ipynb      # Score drift visualization
+│
+├── requirements.txt             # Dependencies
+├── submit_job.sh                # SLURM submission (HPC runs)
+└── README.md                    # Project documentation
