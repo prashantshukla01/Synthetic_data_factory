@@ -20,3 +20,11 @@ jsonlines
 #observability and validation
 langsmith
 pydantic
+
+
+#model training
+transformers>=4.35.2
+datasets>=2.18.0
+peft>=0.14.0
+trl>=0.8.5
+torch>=2.2.0
