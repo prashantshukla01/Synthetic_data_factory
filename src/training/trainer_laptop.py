@@ -29,7 +29,36 @@ def train_laptop():
     
     
     #LORA setup
+    peft_config = LoraConfig(
+        r = 16 , 
+        lora_alpha = 32,
+        target_modules = "all-linear" , task_type = "CAUSAL_LM"
+    )
     
+    training_args = SFTConfig(
+        output_dir = "./models/phi3-laptop",
+        dataset_text_field= "text",
+        max_seq_length = 512,
+        num_train_epochs =1,
+        per_device_train_batch_size = 2,
+        gradient_accumulation_steps=4,
+        per_device_eval_batch_size = 1,
+        save_strategy="no",
+        report_to = "none",
+        )
+    
+    trainer = SFTTrainer(
+        model = model,
+        train_dataset = load_dataset(dataset_name , split="train"),
+        peft_config = peft_config,
+        args = training_args,
+        tokenizer = tokenizer
+        
+    )
+    trainer.train()
+    
+if __name__ == "__main__":
+    train_laptop()
     
     
     
