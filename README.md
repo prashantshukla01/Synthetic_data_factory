@@ -1,100 +1,94 @@
-GenFactory: Autonomous Synthetic Data Pipeline & Model Fine-Tuning
-GenFactory is an end-to-end industrial pipeline designed to generate high-quality synthetic datasets using a Teacher-Student architecture. It leverages Gemini 2.0 (Teacher) to produce and evaluate data via a self-healing LangGraph orchestration loop, which is then used to fine-tune a specialized Phi-3 (Student) model for niche domains like Python automation and Fintech security.
+# 🚀 GenFactory
+### Autonomous Synthetic Data Pipeline & Model Fine-Tuning Framework
 
-🌟 Key Features
-Autonomous Orchestration: Uses LangGraph to manage a generator-evaluator loop with built-in retry logic.
+GenFactory is an end-to-end, production-grade framework for **synthetic data generation and model distillation** using a **Teacher–Student architecture**.
 
-Self-Healing Data Quality: Implements a "Judge" LLM (Gemini 1.5 Flash) that only accepts data scoring ≥8/10.
+The system leverages **Gemini (Teacher models)** to autonomously generate and evaluate high-quality, domain-specific datasets via a **self-healing LangGraph orchestration loop**, and then fine-tunes a lightweight **Phi-3 (Student model)** for efficient deployment in niche domains such as **Python automation**, **FinTech security**, and other specialized technical areas.
 
-Persistent Memory: State-aware checkpointing using Redis Stack to handle crashes and long-running batches.
+This project is designed with **industry-grade reliability, observability, and scalability** in mind.
 
-Hardware-Aware Training: Optimized training paths for Apple Silicon (M3 MPS) and NVIDIA Clusters (SLURM/QLoRA).
+---
 
-Industry Observability: Full tracing of every LLM decision via LangSmith.
+## ✨ Key Features
 
-🏗️ Technical Architecture
-The project is structured into four distinct industrial levels:
+### 🧠 Autonomous Orchestration
+- LangGraph-powered stateful workflow
+- Generator → Judge → Retry → Accept execution loop
+- Automatic retry handling and failure recovery
 
-Level 1: Orchestration Brain (LangGraph + Redis)
+### 🛡️ Self-Healing Data Quality
+- Dedicated **Judge LLM (Gemini 1.5 Flash)**
+- Multi-metric evaluation (relevance, correctness, clarity)
+- Only samples scoring **≥ 8/10** are accepted
+- Controlled retry logic for weak outputs
 
-Level 2: Data Engineering (JSONL Sink + Hugging Face Hub)
+### 💾 Persistent Memory & Crash Safety
+- **Redis Stack**–based checkpointing (RedisJSON + RediSearch)
+- Safe resume for long-running generation jobs
+- Durable state storage across batches
 
-Level 3: Domain Training (SFT + LoRA/QLoRA)
+### 🧪 Hardware-Aware Fine-Tuning
+- Apple Silicon (M3) optimized via **MPS + FP16**
+- NVIDIA cluster training via **QLoRA + bf16**
+- Separate pipelines for laptop and supercomputer training
 
-Level 4: Evaluation Loop (Accuracy Gain Benchmarking)
+### 📊 Industry-Level Observability
+- Full tracing with **LangSmith**
+- Inspect every LLM decision and graph transition
+- Cost, retry, and quality visibility
 
-📂 Project Structure
-Plaintext
+---
+
+## 🏗️ Technical Architecture
+
+The system is structured into **four industrial layers**, each with a single responsibility:
+
+### Level 1 — Orchestration Brain
+**LangGraph + Redis Stack**
+- Stateful control flow
+- Conditional routing and retries
+- Crash-safe checkpointing
+
+### Level 2 — Data Engineering
+**JSONL Sink + Hugging Face Hub**
+- Deterministic formatting
+- Incremental dataset construction
+- Automated versioned publishing
+
+### Level 3 — Domain Training
+**SFT + LoRA / QLoRA**
+- Phi-3 fine-tuning
+- Hardware-specific optimization paths
+
+### Level 4 — Evaluation Loop
+**Accuracy Gain Benchmarking**
+- Base vs fine-tuned model comparison
+- Promotion gating
+- Regression detection
+
+---
+
+## 📂 Project Structure
+
+```text
 synthetic_data_factory/
 ├── src/
-│   ├── graph/               # Orchestration logic
-│   │   ├── state.py         # State schema (retry_count, score)
-│   │   ├── nodes.py         # Gemini Generator & Evaluator logic
-│   │   ├── edges.py         # Conditional routing (Retry vs. Format)
-│   │   └── workflow.py      # Compiled LangGraph with Redis Saver
-│   ├── data_eng/            # Data persistence layer
-│   │   ├── formatter.py     # JSONL standardization
-│   │   └── hf_uploader.py   # Automated Hugging Face syncing
-│   ├── training/            # Hardware-specific fine-tuning
-│   │   ├── train_laptop.py  # Optimized for M3 (MPS/float16)
-│   │   └── train_super.py   # Optimized for A100 (CUDA/QLoRA/bf16)
-│   └── main.py              # Entry point for generation
-├── .env                     # Secrets (Gemini, HF, LangSmith)
-├── requirements.txt         # Dependency manifest
-└── submit_job.sh            # SLURM script for cluster deployment
-🚀 Getting Started
-1. Prerequisites
-
-Python: 3.10+
-
-Redis: Redis Stack (required for JSON checkpointing)
-
-API Keys: Google AI Studio (Gemini), Hugging Face (Write Token), LangSmith.
-
-2. Installation
-
-Bash
-git clone https://github.com/prashantshukla2410/GenFactory.git
-cd GenFactory
-pip install -r requirements.txt
-3. Environment Setup
-
-Create a .env file in the root:
-
-Bash
-GOOGLE_API_KEY="your_key"
-HF_TOKEN="your_token"
-LANGCHAIN_TRACING_V2="true"
-LANGCHAIN_API_KEY="your_key"
-REDIS_URL="redis://localhost:6379"
-🛠️ Usage
-Step 1: Generate Synthetic Data
-
-Run the factory to start the Gemini 2.0 Teacher-Evaluator loop:
-
-Bash
-python src/main.py
-Step 2: Local Fine-Tuning (Laptop)
-
-Train the Phi-3 student model on your MacBook M3:
-
-Bash
-python src/training/train_laptop.py
-Step 3: Cluster Fine-Tuning (Supercomputer)
-
-Submit the job to your college department's NVIDIA cluster:
-
-Bash
-sbatch submit_job.sh
-📊 Evaluation & Metrics
-The pipeline includes a "Promotion Gate" that compares the base model against the fine-tuned adapter.
-
-Target Accuracy Gain: +15% over base model.
-
-Quality Threshold: Only data with a score ≥8 is used for training.
-
-📜 License & Acknowledgements
-License: MIT
-
-
-Author: Prashant Shukla
+│   ├── graph/                  # LangGraph orchestration
+│   │   ├── state.py             # State schema (retry_count, score, etc.)
+│   │   ├── nodes.py             # Gemini Generator & Judge logic
+│   │   ├── edges.py             # Conditional routing rules
+│   │   └── workflow.py          # Compiled LangGraph + Redis Saver
+│   │
+│   ├── data_eng/               # Data engineering layer
+│   │   ├── formatter.py         # JSONL / ChatML standardization
+│   │   └── hf_uploader.py       # Hugging Face dataset sync
+│   │
+│   ├── training/               # Fine-tuning pipelines
+│   │   ├── train_laptop.py      # Apple Silicon (M3, MPS, FP16)
+│   │   └── train_super.py       # NVIDIA A100 (CUDA, QLoRA, bf16)
+│   │
+│   └── main.py                 # Synthetic data factory entry point
+│
+├── .env                        # Secrets (Gemini, HF, LangSmith)
+├── requirements.txt            # Dependency manifest
+└── submit_job.sh               # SLURM job submission script
