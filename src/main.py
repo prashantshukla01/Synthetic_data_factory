@@ -5,7 +5,7 @@ from src.data_eng.formatter import format_for_finetuning, save_to_jsonl
 from src.data_eng.hf_uploader import upload_dataset_to_hf
 
 def run_factory(seed_list: list):
-    print(f"🚀 Factory initialized with {len(seed_list)} topics.", flush=True)
+    print(f" Factory initialized with {len(seed_list)} topics.", flush=True)
     
     # Unique thread ID for Redis checkpointing
     config = {"configurable": {"thread_id": str(uuid.uuid4())}}
@@ -24,7 +24,7 @@ def run_factory(seed_list: list):
             final_state = app.invoke(initial_state, config=config)
             
             score = final_state.get("score", 0)
-            print(f"📊 Quality Score: {score}/10", flush=True)
+            print(f"Quality Score: {score}/10", flush=True)
             
             if score >= 8:
                 formatted_data = format_for_finetuning(
@@ -32,16 +32,16 @@ def run_factory(seed_list: list):
                     response=final_state["current_generation"]
                 )
                 save_to_jsonl(formatted_data)
-                print(f"✅ Record saved locally.", flush=True)
+                print(f"Record saved locally.", flush=True)
             else:
-                print(f"⚠️ Low score. Skipping save.", flush=True)
+                print(f"Low score. Skipping save.", flush=True)
                 
         except Exception as e:
-            print(f"❌ Error during graph execution: {e}", flush=True)
+            print(f"Error during graph execution: {e}", flush=True)
 
-    print("\n⬆️ Syncing all accepted data to Hugging Face...", flush=True)
+    print("\n Syncing all accepted data to Hugging Face...", flush=True)
     upload_dataset_to_hf()
-    print("🏁 Process Complete.", flush=True)
+    print(" Process Complete.", flush=True)
 
 if __name__ == "__main__":
     # Ensure topics are defined correctly
