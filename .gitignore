@@ -8,7 +8,7 @@ data/processed/
 models/*.gguf
 models/phi3-specialized-adapter/
 
-# Python & System
+# Python & System ignore
 __pycache__/
 llm_env/
 .DS_Store
