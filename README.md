@@ -13,7 +13,7 @@ This project is designed with **industry-grade reliability, observability, and s
 
 ### 🧠 Autonomous Orchestration
 - LangGraph-powered stateful workflow
-- Generator → Judge → Retry → Accept execution loop
+- Generator → Judge → Retry → Accept execution loop.
 - Automatic retry handling and failure recovery
 
 ### 🛡️ Self-Healing Data Quality
