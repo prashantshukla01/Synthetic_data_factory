@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genfactory"
+version = "0.1.0"
+description = "Autonomous Synthetic Data Pipeline and Model Fine-Tuning"
+readme = "README.md"
+authors = [{ name = "Prashant Shukla", email = "prashantshukla9812@gmail.com" }]
+requires-python = ">=3.10"
+
+dependencies = [
+    "langchain>=0.1.0",
+    "langgraph>=0.1.0",
+    "langchain-google-genai",
+    "langsmith>=0.1.0",
+    "python-dotenv",
+    "redis",
+    "datasets",
+    "transformers",
+    "peft",
+    "trl",
+    "accelerate",
+    "sentence-transformers",
+    "streamlit",
+]
+
+[project.optional-dependencies]
+laptop = [
+    "llama-cpp-python",
+    "huggingface-hub[cli]",
+]
+
+cluster = [
+    "bitsandbytes",
+    "deepspeed",
+    "tensorboard",
+]
+
+[project.scripts]
+gen-data = "main:main"
+train-local = "training.train_laptop:train_laptop"
+test-model = "test:run_smooth_test"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

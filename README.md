@@ -113,4 +113,18 @@ ai-factory-project/
 │
 ├── requirements.txt             # Dependencies
 ├── submit_job.sh                # SLURM submission (HPC runs)
-└── README.md                    # Project documentation
+
+## 🚀 Running the App
+
+To launch the Streamlit dashboard, simply run:
+
+```bash
+./run_app.sh
+```
+
+Alternatively, you can run it manually:
+
+```bash
+export PYTHONPATH=$PYTHONPATH:.
+streamlit run src/ui/app.py
+```

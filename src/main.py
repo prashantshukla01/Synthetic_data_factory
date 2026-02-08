@@ -52,3 +52,5 @@ if __name__ == "__main__":
     ]
     print("--- STARTING SCRIPT ---", flush=True)
     run_factory(topics)
+    
+    
