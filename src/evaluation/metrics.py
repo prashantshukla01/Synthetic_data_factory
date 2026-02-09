@@ -2,7 +2,7 @@
 
 import torch 
 from sentence_transformers import SentenceTransformer , util
-from src.graph.nodes import llm # reusing gemini for evaluation
+from graph.nodes import get_dynamic_llm
 
 
 # Load a lightweight embedding model for similarity checks
@@ -16,6 +16,8 @@ def calculate_semantic_similarity(reference:str , candidate:str):
 
 def check_hallucination(input_text : str , generated_text: str):
     """Uses Gemini as a 'Judge' to detect factual errors."""
+    eval_llm = get_dynamic_llm(is_evaluator=True)
+    
     prompt = f""" Compare the following AI response to the source input.
     Input: {input_text}
     Response: {generated_text}
@@ -24,6 +26,6 @@ def check_hallucination(input_text : str , generated_text: str):
     Return a score from 1 (Totally Hallucinated) to 10 (Perfectly Grounded).
     """
     
-    response = llm.invoke(prompt)
+    response = eval_llm.invoke(prompt)
     # Extract numeric score from judge output
     return response.content

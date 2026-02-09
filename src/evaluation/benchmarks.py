@@ -1,6 +1,6 @@
 #compares Base Model (e.g. Phi-3 vanilla) vs Fine-tuned Model.
 import json
-from src.evaluation.metrics import calculate_semantic_similarity
+from evaluation.metrics import calculate_semantic_similarity
 
 def run_regression_test(base_model , fine_tuned_model , test_dataset_path:str):
     """compares two models to ensure no performance degradation.
