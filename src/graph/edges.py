@@ -1,4 +1,4 @@
-from src.graph.state import AgentState
+from graph.state import AgentState
 
 def routing_logic(state:AgentState):
     """Decides which node to visit next"""
