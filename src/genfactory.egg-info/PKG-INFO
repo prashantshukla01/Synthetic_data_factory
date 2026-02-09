@@ -1,0 +1,158 @@
+Metadata-Version: 2.4
+Name: genfactory
+Version: 0.1.0
+Summary: Autonomous Synthetic Data Pipeline and Model Fine-Tuning
+Author-email: Prashant Shukla <prashantshukla9812@gmail.com>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: langchain>=0.1.0
+Requires-Dist: langgraph>=0.1.0
+Requires-Dist: langchain-google-genai
+Requires-Dist: langsmith>=0.1.0
+Requires-Dist: python-dotenv
+Requires-Dist: redis
+Requires-Dist: datasets
+Requires-Dist: transformers
+Requires-Dist: peft
+Requires-Dist: trl
+Requires-Dist: accelerate
+Requires-Dist: sentence-transformers
+Requires-Dist: streamlit
+Provides-Extra: laptop
+Requires-Dist: llama-cpp-python; extra == "laptop"
+Requires-Dist: huggingface-hub[cli]; extra == "laptop"
+Provides-Extra: cluster
+Requires-Dist: bitsandbytes; extra == "cluster"
+Requires-Dist: deepspeed; extra == "cluster"
+Requires-Dist: tensorboard; extra == "cluster"
+
+# 🚀 GenFactory
+### Autonomous Synthetic Data Pipeline & Model Fine-Tuning Framework
+
+GenFactory is an end-to-end, production-grade framework for **synthetic data generation and model distillation** using a **Teacher–Student architecture**.
+
+The system leverages **Gemini (Teacher models)** to autonomously generate and evaluate high-quality, domain-specific datasets via a **self-healing LangGraph orchestration loop**, and then fine-tunes a lightweight **Phi-3 (Student model)** for efficient deployment in niche domains such as **Python automation**, **FinTech security**, and other specialized technical areas.
+
+This project is designed with **industry-grade reliability, observability, and scalability** in mind.
+
+---
+
+## ✨ Key Features
+
+### 🧠 Autonomous Orchestration
+- LangGraph-powered stateful workflow
+- Generator → Judge → Retry → Accept execution loop.
+- Automatic retry handling and failure recovery
+
+### 🛡️ Self-Healing Data Quality
+- Dedicated **Judge LLM (Gemini 3.0 Flash Preview )**
+- Multi-metric evaluation (relevance, correctness, clarity)
+- Only samples scoring **≥ 8/10** are accepted
+- Controlled retry logic for weak outputs
+
+### 💾 Persistent Memory & Crash Safety
+- **Redis Stack**–based checkpointing (RedisJSON + RediSearch)
+- Safe resume for long-running generation jobs
+- Durable state storage across batches
+
+### 🧪 Hardware-Aware Fine-Tuning
+- Apple Silicon (M3) optimized via **MPS + FP16**
+- NVIDIA cluster training via **QLoRA + bf16**
+- Separate pipelines for laptop and supercomputer training
+
+### 📊 Industry-Level Observability
+- Full tracing with **LangSmith**
+- Inspect every LLM decision and graph transition
+- Cost, retry, and quality visibility
+
+---
+
+## 🏗️ Technical Architecture
+
+The system is structured into **four industrial layers**, each with a single responsibility:
+
+### Level 1 — Orchestration Brain
+**LangGraph + Redis Stack**
+- Stateful control flow
+- Conditional routing and retries
+- Crash-safe checkpointing
+
+### Level 2 — Data Engineering
+**JSONL Sink + Hugging Face Hub**
+- Deterministic formatting
+- Incremental dataset construction
+- Automated versioned publishing
+
+### Level 3 — Domain Training
+**SFT + LoRA / QLoRA**
+- Phi-3 fine-tuning
+- Hardware-specific optimization paths
+
+### Level 4 — Evaluation Loop
+**Accuracy Gain Benchmarking**
+- Base vs fine-tuned model comparison
+- Promotion gating
+- Regression detection
+
+---
+
+## 📂 Project Structure
+
+```text
+ai-factory-project/
+├── .env                         # API keys (Gemini, OpenAI, HF, LangSmith)
+│
+├── config/                      # Centralized configuration
+│   ├── settings.yaml            # Thresholds (score >= 8), model names, retries
+│   └── prompts.yaml             # System prompts (Generator, Judge, Formatter)
+│
+├── data/                        # Local data storage
+│   ├── raw/                     # Initial seeds / prompts
+│   ├── processed/               # JSONL sink (Level 2 output)
+│   └── checkpoints/             # Graph + state backups
+│
+├── src/
+│   ├── main.py                  # Entry point to run the factory
+│
+│   ├── graph/                   # Level 1: Orchestration Brain (LangGraph)
+│   │   ├── state.py              # State schema (retry_count, score, trace_id)
+│   │   ├── nodes.py              # Generator, Judge, Formatter
+│   │   ├── edges.py              # Conditional routing (score < 8 vs >= 8)
+│   │   └── workflow.py           # Graph compilation + Redis checkpointing
+│
+│   ├── data_eng/                # Level 2: Data Engineering Layer
+│   │   ├── formatter.py          # JSONL / ChatML normalization
+│   │   └── hf_uploader.py        # HuggingFace dataset syncing
+│
+│   ├── evaluation/              # Level 4: Evaluation & Feedback Loop
+│   │   ├── benchmarks.py         # Regression & drift detection
+│   │   └── metrics.py            # Accuracy, hallucination, score tracking
+│
+│   ├── training/                # Level 3: Fine-tuning pipelines
+│   │   ├── train_laptop.py       # Apple Silicon (MPS, FP16)
+│   │   └── train_super.py        # A100 (CUDA, QLoRA, bf16)
+│
+│   └── utils/                   # Shared utilities
+│       ├── database.py           # Redis / Postgres connections
+│       └── logger.py             # LangSmith / custom logging
+│
+├── notebooks/                   # Exploration & analysis
+│   └── drift_analysis.ipynb      # Score drift visualization
+│
+├── requirements.txt             # Dependencies
+├── submit_job.sh                # SLURM submission (HPC runs)
+
+## 🚀 Running the App
+
+To launch the Streamlit dashboard, simply run:
+
+```bash
+./run_app.sh
+```
+
+Alternatively, you can run it manually:
+
+```bash
+export PYTHONPATH=$PYTHONPATH:.
+streamlit run src/ui/app.py
+```

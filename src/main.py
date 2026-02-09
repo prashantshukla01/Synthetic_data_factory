@@ -1,8 +1,8 @@
 import uuid
 import sys
-from src.graph.workflow import app
-from src.data_eng.formatter import format_for_finetuning, save_to_jsonl
-from src.data_eng.hf_uploader import upload_dataset_to_hf
+from graph.workflow import app
+from data_eng.formatter import format_for_finetuning, save_to_jsonl
+from data_eng.hf_uploader import upload_dataset_to_hf
 
 def run_factory(seed_list: list):
     print(f" Factory initialized with {len(seed_list)} topics.", flush=True)

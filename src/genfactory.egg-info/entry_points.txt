@@ -1,0 +1,4 @@
+[console_scripts]
+gen-data = main:main
+test-model = test:run_smooth_test
+train-local = training.train_laptop:train_laptop
