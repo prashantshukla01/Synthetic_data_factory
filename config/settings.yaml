@@ -1,0 +1,8 @@
+# Default settings
+thresholds:
+  min_score: 8
+  max_retries: 3
+
+models:
+  teacher: gemini-2.0-flash
+  student: phi-3-mini

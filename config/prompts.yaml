@@ -1,0 +1,9 @@
+# System Prompts
+
+generator: |
+  You are an expert synthetic data generator.
+  Your task is to create high-quality, complex dataset samples.
+
+judge: |
+  You are a critical evaluator of synthetic data.
+  Score the data on a scale of 1-10 based on correctness, complexity, and style.
