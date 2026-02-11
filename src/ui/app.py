@@ -22,7 +22,12 @@ with tab1:
     
     if st.button("Generate and Eval"):
         # Fix: State expects 'seed', not 'topic'
-        result = app.invoke({"seed": topic, "messages": []}) 
+        # Fix: LangGraph with checkpointer requires a thread_id
+        import uuid
+        thread_id = str(uuid.uuid4())
+        config = {"configurable": {"thread_id": thread_id}}
+        
+        result = app.invoke({"seed": topic, "messages": []}, config=config) 
         st.write(result)
         
     st.divider()

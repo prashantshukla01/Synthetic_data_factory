@@ -27,7 +27,12 @@ def train_laptop(chart_placeholder):
     st.info(f"🏗️ Preparing Training for: {model_id} on MPS...")
     
     tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-    tokenizer.pad_token = tokenizer.eos_token
+    
+    # Fix for Qwen and other models that lack a default pad token
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        # Ensure padding side is right for potential generation/training compatibility
+        tokenizer.padding_side = "right"
 
     # Use 'mps' for Mac M3 GPU acceleration
     device = "mps" if torch.backends.mps.is_available() else "cpu"

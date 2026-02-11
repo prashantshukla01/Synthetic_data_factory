@@ -53,4 +53,5 @@ if __name__ == "__main__":
     print("--- STARTING SCRIPT ---", flush=True)
     run_factory(topics)
     
-    
+
+# source llm_env/bin/activate && streamlit run src/ui/app.py
