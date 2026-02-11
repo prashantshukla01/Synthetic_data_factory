@@ -1,7 +1,0 @@
-data_eng
-database
-evaluation
-graph
-training
-ui
-utils
